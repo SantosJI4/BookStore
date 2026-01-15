@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookstore.settings")  # ajuste para o nome do seu projeto
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookstore.settings") 
 django.setup()
 
 from product.factories import ProductFactory
