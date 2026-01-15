@@ -1,8 +1,10 @@
-nome ="iury"
-idade=21
-altura=1.75
-peso=76
+import os
+import django
 
-imc = peso / (altura * altura)  
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookstore.settings") 
+django.setup()
 
-print("Olá meu nome é "+ str(nome) + " e eu tenho " + str(idade) + " anos e meu imc é de " + str(imc) )
+from product.factories import ProductFactory
+
+produtos = [ProductFactory() for _ in range(50)]
+print(produtos[:5])
