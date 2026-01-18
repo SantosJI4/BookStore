@@ -1,5 +1,5 @@
 # `python-base` sets up all our shared environment variables
-FROM python:3.13.1-slim AS python-base
+FROM python:3.11-slim as python-base
 
     # python
 ENV PYTHONUNBUFFERED=1 \
@@ -13,7 +13,7 @@ ENV PYTHONUNBUFFERED=1 \
     \
     # poetry
     # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=2.1.4 \
+    POETRY_VERSION=1.8.2 \
     # make poetry install to this location
     POETRY_HOME="/opt/poetry" \
     # make poetry create the virtual environment in the project's root
@@ -41,6 +41,7 @@ RUN apt-get update \
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
+# install postgres dependencies
 RUN apt-get update \
     && apt-get -y install libpq-dev gcc \
     && pip install psycopg2
@@ -48,9 +49,12 @@ RUN apt-get update \
 # copy project requirement files here to ensure they will be cached.
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
-
+    # regenerate lock file after pyproject.toml changes
+    RUN poetry lock --no-update
+    # install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+    RUN poetry install --only main
 # quicker install as runtime deps are already installed
-RUN  poetry install --no-root
+RUN poetry install
 
 WORKDIR /app
 
