@@ -44,5 +44,9 @@ jobs:
       run: poetry install --no-interaction
 
     - name: Test
+      env:
+        DEBUG: 1
+        SECRET_KEY: django-insecure-test-key-for-ci
+        DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,[::1]
       run: |
         poetry run python manage.py test
